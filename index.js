@@ -13,17 +13,23 @@ const __dirname = dirname(__filename);
 
 app.post('/data', async (req, res) => {
     const repo = req.body.repo;
+    const timeStart = Date.now();  
+    let timeEnd;
+
     const value = await redis.get(repo);
 
     if (value) {
+        timeEnd = Date.now();  
         return res.json({
             from: 'redis',
             status: 'ok',
-            stars: value
+            stars: value,
+            timeForRet: timeEnd - timeStart
         });
     }
 
     const response = await fetch(`https://api.github.com/repos/${repo}`).then(t => t.json());
+    timeEnd = Date.now();  
     if (response.stargazers_count !== undefined) {
         await redis.set(repo, response.stargazers_count);
     }
@@ -31,7 +37,8 @@ app.post('/data', async (req, res) => {
     res.json({
         from: 'remote',
         status: 'ok',
-        stars: response.stargazers_count
+        stars: response.stargazers_count,
+        timeForRet: timeEnd - timeStart
     });
 });
 

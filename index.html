@@ -6,11 +6,12 @@
         </title>
     </head>
     <body>
+        <h1>Git Repo using Redis</h1>
         <h1>Enter the repo in the format: facebook/react</h1>
         <form id ='form'>
                 <input type="text" id = "repo-name" placeholder="Enter repository">
                 <input type="submit" value="Go">
-                <div id="output"></div>
+                <pre id="output"></pre>
         </form>
         <script>
             const form = document.getElementById('form')
@@ -30,12 +31,19 @@
                 }).then(t=>t.json())
                 
                 const timeEnd = Date.now()
+                // console.log("Full data:", data);
+                // console.log("Stars field:", data.Stars);
 
-                if(data.Stars =! undefined){
-                    document.getElementById('output').innerHTML = `stars for ${input.value} = ${data.Stars}. Milliseconds = ${timeEnd -timeStart}. Source = ${data.from}`
-                }else{
-                    alert("wrong repo URL")
-                }
+            if (data.stars != undefined) {
+         document.getElementById('output').innerHTML = 
+        `stars for ${input.value} = ${data.stars}.<br>` +
+        `Milliseconds = ${timeEnd - timeStart}.<br>` +
+        `Source = ${data.from}.<br>` +
+        `Times for ret = ${data.timeForRet}`;
+} else {
+    alert("Stars field is missing or undefined.");
+}
+
             }
         </script>
     </body>
